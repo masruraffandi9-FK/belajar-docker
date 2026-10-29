@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Menu Kantin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Kembali ke Beranda</a>
+
+        <div class="header" style="text-align: left; margin-bottom: 24px;">
+            <span class="header-badge">🍽️ Menu Hari Ini</span>
+            <h1>Pilihan Hidangan Kantin</h1>
+            <p>Silakan pilih menu favoritmu di bawah ini</p>
+        </div>
+
+        <div class="menu-grid">
+            {% for item in items %}
+            <div class="menu-card">
+                <div>
+                    <span class="menu-badge">{{ item.kategori }}</span>
+                    <div class="menu-name">{{ item.nama }}</div>
+                </div>
+                <div class="menu-price">Rp {{ "{:,}".format(item.harga) }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card">
+            <div class="card-title">📝 Buat Pesanan Baru</div>
+            <form action="/pesan" method="POST">
+                <div class="form-group">
+                    <label>Nama Pemesan</label>
+                    <input type="text" name="nama_pemesan" placeholder="Contoh: Budi - Teknik Informatika" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Pilih Menu</label>
+                        <select name="menu_id" required>
+                            {% for item in items %}
+                            <option value="{{ item.id }}">{{ item.nama }} — Rp {{ "{:,}".format(item.harga) }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jumlah Porsi</label>
+                        <input type="number" name="jumlah" value="1" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Metode Pembayaran</label>
+                    <select name="metode_pembayaran" required>
+                        <option value="QRIS">⚡ QRIS / e-Wallet (Otomatis)</option>
+                        <option value="Tunai">💵 Tunai di Kasir</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Lanjut ke Pembayaran →</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

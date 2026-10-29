@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Pesanan #{{ data.id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container" style="max-width: 480px;">
+        <a href="/menu" class="back-link">← Buat Pesanan Baru</a>
+
+        <div class="receipt-card">
+            <span class="header-badge" style="margin-bottom: 8px;">Struk Digital</span>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 4px;">Rincian Pembayaran</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">
+                Kode Pesanan: <strong style="color: var(--text-main);">#{{ data.id }}</strong>
+            </p>
+
+            <div style="background: var(--bg-body); padding: 18px; border-radius: var(--radius-md); text-align: left; margin-bottom: 24px; border: 1px solid var(--border);">
+                <p style="margin-bottom: 8px;"><strong>Nama Pemesan:</strong> {{ data.nama_pemesan }}</p>
+                <p style="margin-bottom: 8px;"><strong>Menu:</strong> {{ data.nama_menu }} ({{ data.jumlah }}x)</p>
+                <p style="margin-bottom: 8px;"><strong>Metode:</strong> {{ data.metode_pembayaran }}</p>
+                <hr style="margin: 12px 0; border: none; border-top: 1px solid var(--border);">
+                <p style="font-size: 1.15rem; display: flex; justify-content: space-between; align-items: center;">
+                    <strong>Total Tagihan:</strong> 
+                    <span style="color: var(--primary); font-weight: 800;">Rp {{ "{:,}".format(data.total_harga) }}</span>
+                </p>
+            </div>
+
+            {% if data.status_pembayaran == 'Belum Bayar' %}
+                {% if data.metode_pembayaran == 'QRIS' %}
+                    <p style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">Scan QRIS di bawah ini:</p>
+                    <div class="qr-box">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=KANTIN-KAMPUS-{{ data.id }}-{{ data.total_harga }}" alt="QRIS Code" style="width: 180px; height: 180px; display: block;">
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">Klik tombol di bawah setelah melakukan transfer:</p>
+                {% else %}
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Silakan lakukan pembayaran tunai secara langsung di kasir kantin.</p>
+                {% endif %}
+
+                <a href="/konfirmasi-bayar/{{ data.id }}" class="btn" style="text-decoration: none; display: block;">Konfirmasi Sudah Bayar</a>
+            {% else %}
+                <div style="background: var(--success-bg); color: var(--success); padding: 16px; border-radius: var(--radius-md); font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    ✅ Pembayaran Lunas!
+                </div>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 12px;">Pesanan kamu sedang disiapkan oleh tim dapur kantin.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

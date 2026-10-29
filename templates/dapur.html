@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layar Dapur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container" style="max-width: 1100px;">
+        <a href="/" class="back-link">← Kembali ke Beranda</a>
+
+        <div class="header" style="text-align: left; margin-bottom: 24px;">
+            <span class="header-badge">👨‍🍳 Dashboard Pengelola</span>
+            <h1>Manajemen Dapur & Antrean</h1>
+            <p>Kelola daftar menu dan pantau status pesanan pelanggan secara terpusat</p>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Pesanan</div>
+                <div class="stat-value">{{ daftar_pesanan|length }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Menu Aktif</div>
+                <div class="stat-value">{{ daftar_menu|length }}</div>
+            </div>
+        </div>
+
+        <!-- Form Tambah Menu -->
+        <div class="card">
+            <div class="card-title">➕ Tambah Menu Baru</div>
+            <form action="/tambah-menu" method="POST">
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 12px; align-items: end;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Nama Menu</label>
+                        <input type="text" name="nama" placeholder="Contoh: Es Jeruk Peras" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Harga (Rp)</label>
+                        <input type="number" name="harga" placeholder="7000" min="0" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Kategori</label>
+                        <select name="kategori" required>
+                            <option value="Makanan">Makanan</option>
+                            <option value="Minuman">Minuman</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn" style="padding: 12px 20px;">+ Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Menu Table -->
+        <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 32px;">
+            <div style="padding: 18px 24px; font-weight: 700; background: #f8fafc; border-bottom: 1px solid var(--border);">
+                🍱 Daftar Menu Kantin Aktif
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Menu</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in daftar_menu %}
+                        <tr>
+                            <td><strong>#{{ item.id }}</strong></td>
+                            <td><strong>{{ item.nama }}</strong></td>
+                            <td><span class="menu-badge">{{ item.kategori }}</span></td>
+                            <td>Rp {{ "{:,}".format(item.harga) }}</td>
+                            <td>
+                                <a href="/hapus-menu/{{ item.id }}" class="btn-action" style="background: var(--danger);" onclick="return confirm('Yakin ingin menghapus menu ini?')">Hapus</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pesanan Table -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 18px 24px; font-weight: 700; background: #f8fafc; border-bottom: 1px solid var(--border);">
+                📋 Antrean Pesanan Masuk
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Pemesan</th>
+                            <th>Menu</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                            <th>Metode</th>
+                            <th>Bayar</th>
+                            <th>Status Dapur</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in daftar_pesanan %}
+                        <tr>
+                            <td><strong>#{{ p.id }}</strong></td>
+                            <td><strong>{{ p.nama_pemesan }}</strong></td>
+                            <td>{{ p.nama_menu }}</td>
+                            <td>{{ p.jumlah }}x</td>
+                            <td><strong>Rp {{ "{:,}".format(p.total_harga) }}</strong></td>
+                            <td><span class="menu-badge">{{ p.metode_pembayaran }}</span></td>
+                            <td>
+                                {% if p.status_pembayaran == 'Lunas' %}
+                                    <span class="badge badge-success">✓ Lunas</span>
+                                {% else %}
+                                    <span class="badge badge-warning">⏳ Belum</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if p.status == 'Diproses' %}
+                                    <span class="badge badge-warning">🍳 Diproses</span>
+                                {% else %}
+                                    <span class="badge badge-success">✅ Selesai</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if p.status == 'Diproses' %}
+                                    <a href="/selesai/{{ p.id }}" class="btn-action">Selesaikan</a>
+                                {% else %}
+                                    <span style="color: var(--text-light); font-size: 0.8rem;">Selesai</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

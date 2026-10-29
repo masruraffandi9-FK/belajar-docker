@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kantin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-badge">Smart Ordering System</span>
+            <h1>Kantin Digital</h1>
+            <p>Pesan makanan favoritmu tanpa antre, lacak status dari gadget</p>
+        </div>
+
+        <div class="role-grid">
+            <a href="/menu" class="role-card">
+                <div class="role-icon">🍱</div>
+                <div class="role-title">Pemesanan / Kasir</div>
+                <div class="role-desc">Jelajahi menu, pilih hidangan lezat, dan bayar secara instant via QRIS/Tunai</div>
+            </a>
+
+            <a href="/dapur" class="role-card">
+                <div class="role-icon">👨‍🍳</div>
+                <div class="role-title">Dapur</div>
+                <div class="role-desc">Kelola stok menu, pantau antrean pesanan masuk, dan perbarui status masakan</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
