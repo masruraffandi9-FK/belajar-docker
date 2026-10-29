@@ -13,7 +13,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   web:
-    build: .
+    image: masruraffandi/kantin-flask:v1
     container_name: kantin_web_container
     restart: always
     ports:
